@@ -1,0 +1,19 @@
+<?php Block::put('breadcrumb') ?>
+    <ul>
+        <li><a href="<?= Backend::url('eq3w/forum/channels') ?>"><?= e(trans('eq3w.forum::lang.channels.name')) ?></a></li>
+        <li><?= e(trans($this->pageTitle)) ?></li>
+    </ul>
+<?php Block::endPut() ?>
+
+<?php if (!$this->fatalError): ?>
+
+    <div class="layout-item stretch layout-column">
+        <?= $this->formRenderPreview() ?>
+    </div>
+
+<?php else: ?>
+
+    <p class="flash-message static error"><?= e(trans($this->fatalError)) ?></p>
+    <p><a href="<?= Backend::url('eq3w/forum/channels') ?>" class="btn btn-default"><?= e(trans('eq3w.forum::lang.channels.returnlist')) ?></a></p>
+
+<?php endif ?>

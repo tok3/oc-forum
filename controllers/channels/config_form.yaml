@@ -1,0 +1,31 @@
+# ===================================
+#  Form Behavior Config
+# ===================================
+
+# Record name
+name: eq3w.forum::lang.channels.name
+
+# Model Form Field configuration
+form: ~/plugins/eq3w/forum/models/channel/fields.yaml
+
+# Model Class name
+modelClass: Eq3w\Forum\Models\Channel
+
+# Default redirect location
+defaultRedirect: eq3w/forum/channels
+
+# Create page
+create:
+    title: eq3w.forum::lang.channels.create
+    redirect: eq3w/forum/channels/update/:id
+    redirectClose: eq3w/forum/channels
+
+# Update page
+update:
+    title: eq3w.forum::lang.channels.update
+    redirect: eq3w/forum/channels
+    redirectClose: eq3w/forum/channels
+
+# Preview page
+preview:
+    title: eq3w.forum::lang.channels.preview

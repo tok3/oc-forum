@@ -1,0 +1,12 @@
+# ===================================
+#  List Column Definitions
+# ===================================
+
+columns:
+    title:
+        label: eq3w.forum::lang.data.title
+        searchable: true
+
+    description:
+        label: eq3w.forum::lang.data.desc
+        searchable: true

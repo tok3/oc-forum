@@ -1,0 +1,42 @@
+# ===================================
+#  Form Field Definitions
+# ===================================
+
+fields:
+    parent:
+        label: eq3w.forum::lang.data.parent
+        type: relation
+        nameFrom: title
+        emptyOption: eq3w.forum::lang.data.noparent
+
+    title:
+        label: eq3w.forum::lang.data.title
+        span: left
+
+    slug:
+        label: eq3w.forum::lang.data.slug
+        span: right
+        preset: title
+
+    description:
+        label: eq3w.forum::lang.data.desc
+        type: textarea
+        size: tiny
+
+    is_moderated:
+        label: eq3w.forum::lang.data.moderated
+        comment: eq3w.forum::lang.data.is_mod
+        type: checkbox
+        span: auto
+
+    is_hidden:
+        label: eq3w.forum::lang.data.hidden
+        comment: eq3w.forum::lang.data.is_hidden
+        type: checkbox
+        span: auto
+
+    is_guarded:
+        label: eq3w.forum::lang.data.guarded
+        comment: eq3w.forum::lang.data.is_guarded
+        type: checkbox
+        span: full
