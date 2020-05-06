@@ -1,8 +1,10 @@
 <?php namespace Eq3w\Forum\Components;
 
 use Auth;
+use Illuminate\Support\Facades\Input;
 use Mail;
 use Flash;
+use RainLab\User\Models\User;
 use Request;
 use Redirect;
 use Cms\Classes\Page;
@@ -19,6 +21,7 @@ class Member extends ComponentBase
      * @var Eq3w\Forum\Models\Member Member cache
      */
     protected $member = null;
+
 
     /**
      * @var Eq3w\Forum\Models\Member Other member cache
@@ -43,7 +46,7 @@ class Member extends ComponentBase
     public function componentDetails()
     {
         return [
-            'name'        => 'eq3w.forum::lang.memberpage.name',
+            'name' => 'eq3w.forum::lang.memberpage.name',
             'description' => 'eq3w.forum::lang.memberpage.self_desc'
         ];
     }
@@ -52,28 +55,28 @@ class Member extends ComponentBase
     {
         return [
             'slug' => [
-                'title'       => 'eq3w.forum::lang.memberpage.slug_name',
+                'title' => 'eq3w.forum::lang.memberpage.slug_name',
                 'description' => 'eq3w.forum::lang.memberpage.slug_desc',
-                'default'     => '{{ :slug }}',
-                'type'        => 'string'
+                'default' => '{{ :slug }}',
+                'type' => 'string'
             ],
             'viewMode' => [
-                'title'       => 'eq3w.forum::lang.memberpage.view_title',
+                'title' => 'eq3w.forum::lang.memberpage.view_title',
                 'description' => 'eq3w.forum::lang.memberpage.view_desc',
-                'type'        => 'dropdown',
-                'default'     => ''
+                'type' => 'dropdown',
+                'default' => ''
             ],
             'channelPage' => [
-                'title'       => 'eq3w.forum::lang.memberpage.ch_title',
+                'title' => 'eq3w.forum::lang.memberpage.ch_title',
                 'description' => 'eq3w.forum::lang.memberpage.ch_desc',
-                'type'        => 'dropdown',
-                'group'       => 'Links',
+                'type' => 'dropdown',
+                'group' => 'Links',
             ],
             'topicPage' => [
-                'title'       => 'eq3w.forum::lang.memberpage.topic_title',
+                'title' => 'eq3w.forum::lang.memberpage.topic_title',
                 'description' => 'eq3w.forum::lang.memberpage.topic_desc',
-                'type'        => 'dropdown',
-                'group'       => 'Links',
+                'type' => 'dropdown',
+                'group' => 'Links',
             ],
         ];
     }
@@ -97,6 +100,7 @@ class Member extends ComponentBase
 
     protected function prepareVars()
     {
+
         $this->page['member'] = $this->getMember();
         $this->page['otherMember'] = $this->getOtherMember();
         $this->page['mailPreferences'] = $this->getMailPreferences();
@@ -110,12 +114,13 @@ class Member extends ComponentBase
         $this->channelPage = $this->page['channelPage'] = $this->property('channelPage');
     }
 
+
     public function getRecentPosts()
     {
         $member = $this->getMember();
         $posts = $member->posts()->with('topic')->limit(10)->get();
 
-        $posts->each(function($post) {
+        $posts->each(function ($post) {
             $post->topic->setUrl($this->topicPage, $this->controller);
         });
 
@@ -124,14 +129,18 @@ class Member extends ComponentBase
 
     public function getMember()
     {
-        if ($this->member !== null) {
+
+        if ($this->member !== null)
+        {
             return $this->member;
         }
 
-        if (!$slug = $this->property('slug')) {
+        if (!$slug = $this->property('slug'))
+        {
             $member = MemberModel::getFromUser();
         }
-        else {
+        else
+        {
             $member = MemberModel::whereSlug($slug)->first();
         }
 
@@ -140,7 +149,8 @@ class Member extends ComponentBase
 
     public function getOtherMember()
     {
-        if ($this->otherMember !== null) {
+        if ($this->otherMember !== null)
+        {
             return $this->otherMember;
         }
 
@@ -149,18 +159,21 @@ class Member extends ComponentBase
 
     public function getMailPreferences()
     {
-        if ($this->mailPreferences !== null) {
+        if ($this->mailPreferences !== null)
+        {
             return $this->mailPreferences;
         }
 
         $member = $this->getMember();
-        if (!$member || !$member->user) {
+        if (!$member || !$member->user)
+        {
             return [];
         }
 
         $preferences = [];
         $blocked = MailBlocker::checkAllForUser($member->user);
-        foreach ($this->getMailTemplates() as $alias => $template) {
+        foreach ($this->getMailTemplates() as $alias => $template)
+        {
             $preferences[$alias] = !in_array($template, $blocked);
         }
 
@@ -174,11 +187,13 @@ class Member extends ComponentBase
 
     public function canEdit()
     {
-        if ($this->property('viewMode') == 'view') {
+        if ($this->property('viewMode') == 'view')
+        {
             return false;
         }
 
-        if (!$member = $this->getMember()) {
+        if (!$member = $this->getMember())
+        {
             return false;
         }
 
@@ -187,20 +202,26 @@ class Member extends ComponentBase
 
     public function onUpdate()
     {
-        try {
-            if (!$this->canEdit()) {
+
+
+        try
+        {
+            if (!$this->canEdit())
+            {
                 throw new ApplicationException('Permission denied.');
             }
 
             $member = $this->getMember();
-            if (!$member) {
+            if (!$member)
+            {
                 return;
             }
 
             /*
              * Process mail preferences
              */
-            if ($member->user) {
+            if ($member->user)
+            {
                 MailBlocker::setPreferences(
                     $member->user,
                     post('MailPreferences'),
@@ -212,16 +233,131 @@ class Member extends ComponentBase
              * Save member
              */
             $data = array_except(post(), 'MailPreferences');
+
+
+            $this->updateUser();
             $member->fill($data);
             $member->save();
 
-            Flash::success(post('flash', 'Settings successfully saved!'));
+
 
             return $this->redirectToSelf();
         }
-        catch (Exception $ex) {
+        catch (Exception $ex)
+        {
             Flash::error($ex->getMessage());
         }
+    }
+
+    /**
+     * Returns the logged in user, if available
+     */
+    public function user()
+    {
+        if (!Auth::check())
+        {
+            return null;
+        }
+
+        return Auth::getUser();
+    }
+
+    /**
+     * Returns the update requires password setting
+     */
+    public function updateRequiresPassword()
+    {
+        return $this->property('requirePassword', false);
+    }
+
+    public function updateUser()
+    {
+        if (!$user = $this->user())
+        {
+            return;
+        }
+
+        $data = post();
+
+        if ($this->updateRequiresPassword())
+        {
+            if (!$user->checkHashValue('password', $data['password_current']))
+            {
+                throw new ValidationException(['password_current' => \Lang::get('eq3w.forum::fe_lang.account.invalid_current_pass')]);
+            }
+        }
+
+        if (\Input::hasFile('avatar'))
+        {
+            $user->avatar = Input::file('avatar');
+        }
+
+        $user->fill($data);
+        $user->save();
+
+        /*
+         * Password has changed, reauthenticate the user
+         */
+        if (array_key_exists('password', $data) && strlen($data['password']))
+        {
+            Auth::login($user->reload(), true);
+        }
+
+        Flash::success(post('flash', \Lang::get(/*Settings successfully saved!*/ 'eq3w.forum::fe_lang.account.success_saved')));
+
+        /*
+         * Redirect
+         */
+        if ($redirect = $this->makeRedirection())
+        {
+            return $redirect;
+        }
+
+        $this->prepareVars();
+    }
+
+    /**
+     * Redirect to the intended page after successful update, sign in or registration.
+     * The URL can come from the "redirect" property or the "redirect" postback value.
+     * @return mixed
+     */
+    protected function makeRedirection($intended = false)
+    {
+        $method = $intended ? 'intended' : 'to';
+
+        $property = trim((string)$this->property('redirect'));
+
+        // No redirect
+        if ($property === '0')
+        {
+            return;
+        }
+        // Refresh page
+        if ($property === '')
+        {
+            return Redirect::refresh();
+        }
+
+        $redirectUrl = $this->pageUrl($property) ?: $property;
+
+        if ($redirectUrl = post('redirect', $redirectUrl))
+        {
+            return Redirect::$method($redirectUrl);
+        }
+    }
+
+
+    private function uploadAvatar($member, $avatarFile)
+    {
+        $file = new \System\Models\File;
+        $file->data = \Input::file('avatar');
+        //$file->disc_name = \Input::file('avatar');
+        $file->save();
+
+        $user = User::find($member->user->id);
+        $user->avatar = \Input::file('avatar');
+        $user->save();
+
     }
 
     protected function getMailTemplates()
@@ -231,14 +367,18 @@ class Member extends ComponentBase
 
     public function onPurgePosts()
     {
-        try {
+        try
+        {
             $otherMember = $this->getOtherMember();
-            if (!$otherMember || !$otherMember->is_moderator) {
+            if (!$otherMember || !$otherMember->is_moderator)
+            {
                 throw new ApplicationException('Access denied');
             }
 
-            if ($member = $this->getMember()) {
-                foreach ($member->posts as $post) {
+            if ($member = $this->getMember())
+            {
+                foreach ($member->posts as $post)
+                {
                     $post->delete();
                 }
             }
@@ -247,70 +387,95 @@ class Member extends ComponentBase
 
             return $this->redirectToSelf();
         }
-        catch (Exception $ex) {
+        catch (Exception $ex)
+        {
             Flash::error($ex->getMessage());
         }
     }
 
     public function onApprove()
     {
-        try {
+        try
+        {
             $otherMember = $this->getOtherMember();
-            if (!$otherMember || !$otherMember->is_moderator) {
+            if (!$otherMember || !$otherMember->is_moderator)
+            {
                 throw new ApplicationException('Access denied');
             }
 
-            if ($member = $this->getMember()) {
+            if ($member = $this->getMember())
+            {
                 $member->approveMember();
             }
 
             $this->prepareVars();
         }
-        catch (Exception $ex) {
-            if (Request::ajax()) throw $ex; else Flash::error($ex->getMessage());
+        catch (Exception $ex)
+        {
+            if (Request::ajax())
+            {
+                throw $ex;
+            }
+            else
+            {
+                Flash::error($ex->getMessage());
+            }
         }
     }
 
     public function onBan()
     {
-        try {
+        try
+        {
             $otherMember = $this->getOtherMember();
-            if (!$otherMember || !$otherMember->is_moderator) {
+            if (!$otherMember || !$otherMember->is_moderator)
+            {
                 throw new ApplicationException('Access denied');
             }
 
-            if ($member = $this->getMember()) {
+            if ($member = $this->getMember())
+            {
                 $member->banMember();
             }
 
             $this->prepareVars();
         }
-        catch (Exception $ex) {
-            if (Request::ajax()) throw $ex; else Flash::error($ex->getMessage());
+        catch (Exception $ex)
+        {
+            if (Request::ajax())
+            {
+                throw $ex;
+            }
+            else
+            {
+                Flash::error($ex->getMessage());
+            }
         }
     }
 
     public function onReport()
     {
-        if (!Auth::check()) {
+        if (!Auth::check())
+        {
             throw new ApplicationException('You must be logged in to perform this action!');
         }
 
         Flash::success(post('flash', 'User has been reported for spamming, thank-you for your assistance!'));
 
-        $moderators = UserModel::whereHas('forum_member', function($member) {
+        $moderators = UserModel::whereHas('forum_member', function ($member) {
             $member->where('is_moderator', true);
         })->lists('name', 'email');
 
-        if ($moderators) {
+        if ($moderators)
+        {
             $member = $this->getMember();
             $memberUrl = $this->currentPageUrl(['slug' => $member->slug]);
             $otherMember = $this->getOtherMember();
             $otherMemberUrl = $this->currentPageUrl(['slug' => $otherMember->slug]);
             $params = [
-                'member'         => $member,
-                'memberUrl'      => $memberUrl,
-                'otherMember'    => $otherMember,
+                'member' => $member,
+                'memberUrl' => $memberUrl,
+                'otherMember' => $otherMember,
                 'otherMemberUrl' => $otherMemberUrl,
             ];
             Mail::sendTo($moderators, 'eq3w.forum::mail.member_report', $params);
@@ -321,7 +486,8 @@ class Member extends ComponentBase
 
     protected function redirectToSelf()
     {
-        if (!$member = $this->getMember()) {
+        if (!$member = $this->getMember())
+        {
             return false;
         }
 

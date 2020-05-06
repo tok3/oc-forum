@@ -26,7 +26,7 @@
     //
 
     ForumManager.prototype.formatForumQuote = function(author, quote) {
-        quote = "**" + author + "** said:\n\n" + quote
+        quote = "**" + author + "** schrieb:\n\n" + quote
         quote = quote.replace(/^/g, ">")
         quote = quote.replace(/\n/g, "\n>")
 

@@ -5,17 +5,17 @@
     <p>
         <img src="{{ member.user.avatarThumb(50) }}" />
     </p>
-    <p>Member since: {{ member.created_at|date('M Y') }}</p>
+    <p>{{ 'eq3w.forum::fe_lang.member_since' | trans }}: {{ member.created_at|date('M Y') }}</p>
     {% if not member.is_approved %}
-        <p>{{ member.username }} requires approval before posting in guarded channels</p>
+        <p>{{ member.username }} {{ 'eq3w.forum::fe_lang.requires_approval' | trans }}</p>
     {% endif %}
     {% if member.is_banned %}
-        <p>{{ member.username }} has been banned from posting</p>
+        <p>{{ member.username }} {{ 'eq3w.forum::fe_lang.user_banned' | trans }}</p>
     {% endif %}
     {% if member.is_moderator %}
-        <p>{{ member.username }} is a forum moderator</p>
+        <p>{{ member.username }} {{ 'eq3w.forum::fe_lang.user_is_moderator' | trans }}</p>
     {% endif %}
 
-    <h4>Recent posts</h4>
+    <h4>{{ 'eq3w.forum::fe_lang.recent_posts' | trans }}</h4>
     {% partial '@recentposts' %}
 </div>

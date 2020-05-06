@@ -274,7 +274,7 @@ class Topic extends ComponentBase
 
             $expectedCode = TopicFollow::makeAuthCode($action, $topic, $member);
             if ($authCode != $expectedCode) {
-                Flash::error('Invalid authentication code, please sign in and try the link again.');
+                Flash::error(\Lang::get('eq3w.forum::fe_lang.topic.invalid_code'));
                 return;
             }
         }
@@ -284,7 +284,7 @@ class Topic extends ComponentBase
          */
         if ($action == 'unfollow') {
             TopicFollow::unfollow($topic, $member);
-            Flash::success('You will no longer receive notifications about this topic.');
+            Flash::success(\Lang::get('eq3w.forum::fe_lang.topic.notifications_disabled'));
         }
 
         /*
@@ -292,37 +292,38 @@ class Topic extends ComponentBase
          */
         if ($action == 'unsubscribe' && $member->user) {
             MailBlocker::addBlock('eq3w.forum::mail.topic_reply', $member->user);
-            Flash::success('You will no longer receive notifications about any topics in this forum.');
+            Flash::success(\Lang::get('eq3w.forum::fe_lang.topic.forum_notifications_disabled'));
         }
 
     }
-
     public function onCreate()
     {
         try {
             if (!$user = Auth::getUser()) {
-                throw new ApplicationException('You should be logged in.');
+                throw new ApplicationException(\Lang::get('eq3w.forum::fe_lang.should_logged_in'));
             }
 
             $member = $this->getMember();
             $channel = $this->getChannel();
             
             if ($channel->is_moderated && !$member->is_moderator) {
-                throw new ApplicationException('You cannot create a topic in this channel.');
+                throw new ApplicationException(\Lang::get('eq3w.forum::fe_lang.topic.no_creation'));
             }
 
             if (TopicModel::checkThrottle($member)) {
-                throw new ApplicationException('Please wait a few minutes before posting another topic.');
+
+                throw new ApplicationException(\Lang::get('eq3w.forum::fe_lang.topic.wait'));
+
             }
 
             if ($member->is_banned) {
-                throw new ApplicationException('You cannot create new topics: Your account is banned.');
+                throw new ApplicationException(\Lang::get('eq3w.forum::fe_lang.topic.account_banned'));
             }
 
             $topic = TopicModel::createInChannel($channel, $member, post());
             $topicUrl = $this->currentPageUrl([$this->paramName('slug') => $topic->slug]);
 
-            Flash::success(post('flash', 'Topic created successfully!'));
+            Flash::success(post('flash', \Lang::get('eq3w.forum::fe_lang.topic.cr_success')));
 
             /*
              * Extensbility
@@ -346,21 +347,21 @@ class Topic extends ComponentBase
     {
         try {
             if (!$user = Auth::getUser()) {
-                throw new ApplicationException('You should be logged in.');
+                throw new ApplicationException(\Lang::get('eq3w.forum::fe_lang.should_logged_in'));
             }
 
             $member = $this->getMember();
             $topic = $this->getTopic();
 
             if (!$topic || !$topic->canPost()) {
-                throw new ApplicationException('You cannot edit posts or make replies.');
+                throw new ApplicationException(\Lang::get('eq3w.forum::fe_lang.topic.cant_edit'));
             }
 
             $post = PostModel::createInTopic($topic, $member, post());
             $postUrl = $this->currentPageUrl([$this->paramName('slug') => $topic->slug]);
 
             TopicFollow::sendNotifications($topic, $post, $postUrl);
-            Flash::success(post('flash', 'Response added successfully!'));
+            Flash::success(post('flash', \Lang::get('eq3w.forum::fe_lang.topic.resp_success')));
 
             /*
              * Extensbility
@@ -388,7 +389,7 @@ class Topic extends ComponentBase
         $post = PostModel::find(post('post'));
 
         if (!$post || !$post->canEdit()) {
-            throw new ApplicationException('Permission denied.');
+            throw new ApplicationException(\Lang::get('eq3w.forum::fe_lang.permission_denied'));
         }
 
         /*
@@ -397,7 +398,7 @@ class Topic extends ComponentBase
         $mode = post('mode', 'edit');
         if ($mode == 'save') {
             if (!$topic || !$topic->canPost()) {
-                throw new ApplicationException('You cannot edit posts or make replies.');
+                throw new ApplicationException(\Lang::get('eq3w.forum::fe_lang.topic.cant_edit'));
             }
 
             $post->fill(post());
@@ -421,11 +422,11 @@ class Topic extends ComponentBase
     public function onQuote()
     {
         if (!$user = Auth::getUser()) {
-            throw new ApplicationException('You should be logged in.');
+            throw new ApplicationException(\Lang::get('eq3w.forum::fe_lang.should_logged_in'));
         }
 
         if (!$post = PostModel::find(post('post'))) {
-            throw new ApplicationException('Unable to find that post.');
+            throw new ApplicationException(\Lang::get('eq3w.forum::fe_lang.topic.no_post'));
         }
 
         $result = $post->toArray();
@@ -438,7 +439,7 @@ class Topic extends ComponentBase
     {
         $member = $this->getMember();
         if (!$member->is_moderator) {
-            Flash::error('Access denied');
+            Flash::error(\Lang::get('eq3w.forum::fe_lang.access_denied'));
             return;
         }
 
@@ -446,10 +447,10 @@ class Topic extends ComponentBase
         $channel = ChannelModel::find($channelId);
         if ($channel) {
             $this->getTopic()->moveToChannel($channel);
-            Flash::success(post('flash', 'Post moved successfully!'));
+            Flash::success(post('flash', \Lang::get('eq3w.forum::fe_lang.topic.moved')));
         }
         else {
-            Flash::error('Unable to find a channel to move to.');
+            Flash::error(\Lang::get('eq3w.forum::fe_lang.topic.unable_to_move'));
         }
     }
 
@@ -457,7 +458,7 @@ class Topic extends ComponentBase
     {
         try {
             if (!$user = Auth::getUser()) {
-                throw new ApplicationException('You should be logged in.');
+                throw new ApplicationException(\Lang::get('eq3w.forum::fe_lang.should_logged_in'));
             }
 
             $this->page['member'] = $member = $this->getMember();
@@ -476,7 +477,7 @@ class Topic extends ComponentBase
         try {
             $member = $this->getMember();
             if (!$member || !$member->is_moderator) {
-                throw new ApplicationException('Access denied');
+                throw new ApplicationException(\Lang::get('eq3w.forum::fe_lang.access_denied'));
             }
 
             if ($topic = $this->getTopic()) {
@@ -496,7 +497,7 @@ class Topic extends ComponentBase
         try {
             $member = $this->getMember();
             if (!$member || !$member->is_moderator) {
-                throw new ApplicationException('Access denied');
+                throw new ApplicationException(\Lang::get('eq3w.forum::fe_lang.access_denied'));
             }
 
             if ($topic = $this->getTopic()) {

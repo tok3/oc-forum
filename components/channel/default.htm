@@ -1,9 +1,15 @@
+{% set channel = __SELF__.getChannel %}
+
+
 <div class="rainlab-forum">
     {% partial __SELF__ ~ "::title" %}
-
+    <p>
+    <h4>{{ channel.title }}</h4>
+    <h5><small>{{ channel.description }}</small></h5>
+    </p>
     {% partial __SELF__ ~ "::topics" %}
 
     {% if topics %}
-        {% partial __SELF__ ~ "::pagination" %}
+    {% partial __SELF__ ~ "::pagination" %}
     {% endif %}
 </div>

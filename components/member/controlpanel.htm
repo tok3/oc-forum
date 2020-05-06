@@ -2,56 +2,56 @@
     <div class="list-group">
 
         {% if otherMember.is_moderator %}
-            <a
+        <a
                 href="javascript:;"
                 class="list-group-item"
                 data-request="onApprove"
                 data-request-update="'@controlpanel': '#memberControlPanel'">
-                {% if not member.is_approved %}
-                    Approve member
-                {% else %}
-                    Unapprove member
-                {% endif %}
-            </a>
-            <a
+            {% if not member.is_approved %}
+            {{ 'eq3w.forum::fe_lang.member_approve' | trans }}
+            {% else %}
+            {{ 'eq3w.forum::fe_lang.member_unapprove' | trans }}
+            {% endif %}
+        </a>
+        <a
                 href="javascript:;"
                 class="list-group-item"
                 data-request="onBan"
                 data-request-update="'@controlpanel': '#memberControlPanel'">
-                {% if member.is_banned %}
-                    Unban member
-                {% else %}
-                    Ban member
-                {% endif %}
-            </a>
-            <a
+            {% if member.is_banned %}
+            {{ 'eq3w.forum::fe_lang.member_unban' | trans }}
+            {% else %}
+           {{ 'eq3w.forum::fe_lang.member_ban' | trans }}
+            {% endif %}
+        </a>
+        <a
                 href="javascript:;"
                 class="list-group-item"
                 data-request="onPurgePosts"
                 data-request-confirm="Are you sure? This will delete all posts by this member.">
-                Purge posts
-            </a>
+           {{ 'eq3w.forum::fe_lang.purge_posts' | trans }}
+        </a>
         {% else %}
-            <a
+        <a
                 href="javascript:;"
                 class="list-group-item"
                 data-request="onReport"
                 data-request-update="'@controlpanel': '#memberControlPanel'"
                 data-request-confirm="Are you sure you want to flag this member as a spammer?">
-                Report spammer
-            </a>
+            {{ 'eq3w.forum::fe_lang.report_spammer' | trans }}
+        </a>
         {% endif %}
 
         {% if canEdit %}
-            <a
+        <a
                 href="{{ this.page.baseFileName|page }}?mode=edit"
                 class="list-group-item">
-                Edit details
-            </a>
+           {{ 'eq3w.forum::fe_lang.edit_details' | trans }}
+        </a>
         {% endif %}
 
         <div class="list-group-item">
-            <i class="fa fa-eye icon-comments"></i> {{ member.count_posts }} posts
+            <i class="fa fa-eye icon-comments"></i> {{ member.count_posts }} {{ 'eq3w.forum::fe_lang.posts' | trans }}
         </div>
 
     </div>

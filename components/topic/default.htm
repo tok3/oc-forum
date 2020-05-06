@@ -1,57 +1,72 @@
 <div class="rainlab-forum">
 
     {% flash %}
-        <div class="alert alert-{{ type == 'error' ? 'danger' : type }}">
-            {{ message }}
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-        </div>
+    <div class="alert alert-{{ type == 'error' ? 'danger' : type }}">
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+    </div>
     {% endflash %}
 
     {% if returnUrl %}
-        <p>&larr; <a href="{{ returnUrl }}">Back to {{ channel.title }}</a></p>
+    <p>&larr; <a href="{{ returnUrl }}">{{ 'eq3w.forum::fe_lang.back_to' | trans }} {{ channel.title }}</a></p>
     {% endif %}
 
     {% if topic %}
 
-        <h4>{{ topic.subject }}</h4>
+    <div class="row">
 
-        <div class="row">
-            <div class="col-md-3 col-md-push-9">
-
-                <div id="topicControlPanel">
-                    {% partial "@controlpanel" %}
-                </div>
-
-            </div>
-            <div class="col-md-9 col-md-pull-3">
-
-                {% partial "@posts" %}
-
-                {% partial "@pagination" %}
-
-                <h4>Reply to this discussion</h4>
-                {% if not topic.canPost %}
-                    <p>
-                        You cannot edit posts or make replies:
-                        {% if not member %}You should be logged in before you can post.{% endif %}
-                        {% if member.is_banned %}Your account is banned.{% endif %}
-                        {% if topic.is_locked %}This topic is locked.{% endif %}
-                    </p>
-                {% else %}
-                    {% partial "@postform" %}
-                {% endif %}
-
-            </div>
+        <div class="col-md-9 col-md-pull-3">
         </div>
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-9 ">
+            <h2 class="g-mb-20">{{ topic.subject }}</h2>
+
+            {% partial "@posts" %}
+
+            {% partial "@pagination" %}
+
+            <h4>{{ 'eq3w.forum::fe_lang.reply_to_discussion' | trans }}</h4>
+            {% if not topic.canPost %}
+            <p>
+                {{ 'eq3w.forum::fe_lang.cannot_edit_posts' | trans }}
+                {% if not member %}
+                {{ 'eq3w.forum::fe_lang.should_be_logged_in' | trans }}
+                {% endif %}
+                {% if member.is_banned %}
+
+                {{ 'eq3w.forum::fe_lang.your_account_is_banned' | trans }}
+                {% endif %}
+                {% if topic.is_locked %}
+                {{ 'eq3w.forum::fe_lang.topic_is_locked' | trans }}
+                {% endif %}
+            </p>
+            {% else %}
+            {% partial "@postform" %}
+            {% endif %}
+
+        </div>
+
+        <div class="col-md-3 col-md-push-9">
+
+            <div id="topicControlPanel">
+                {% partial "@controlpanel" %}
+            </div>
+
+        </div>
+
+    </div>
 
     {% elseif channel %}
 
-        <h4>Create a new discussion topic</h4>
-        {% partial "@createform" %}
+    <h4>{{ 'eq3w.forum::fe_lang.create_discussion_topic' | trans }}</h4>
+    {% partial "@createform" %}
 
     {% else %}
 
-        <p>Topic not found</p>
+    <p>{{ 'eq3w.forum::fe_lang.topic_not_found' | trans }}</p>
 
     {% endif %}
 </div>

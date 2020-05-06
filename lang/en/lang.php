@@ -61,7 +61,7 @@ return [
     ],
 
     'plugin' => [
-        'name' => 'Forum',
+        'name' => 'eq3w Forum',
         'description' => 'A simple embeddable forum'
     ],
     'data' => [

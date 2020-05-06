@@ -9,6 +9,6 @@
         {% partial __SELF__ ~ "::pagination-list" records=posts %}
     </div>
     <div class="col-md-4 text-right posts-total-summary">
-        <p>{{ posts.firstItem }}-{{ posts.lastItem }} of {{ posts.total }}</p>
+        <p>{{ posts.firstItem }}-{{ posts.lastItem }} {{ 'eq3w.forum::fe_lang.of' | trans }} {{ posts.total }}</p>
     </div>
 </div>

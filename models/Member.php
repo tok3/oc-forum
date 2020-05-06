@@ -55,7 +55,9 @@ class Member extends Model
     public $hasMany = [
         'posts' => ['Eq3w\Forum\Models\Post', 'order' => 'created_at desc']
     ];
-
+    public $attachOne = [
+        'avatar' => \System\Models\File::class
+    ];
     /**
      * Automatically creates a forum member for a user if not one already.
      * @param  RainLab\User\Models\User $user

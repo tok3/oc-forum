@@ -5,6 +5,8 @@
     </div>
 {% endflash %}
 
+
+
 {% if __SELF__.member %}
 
     <div class="row">
@@ -21,11 +23,16 @@
             {% else %}
                 {% partial __SELF__ ~ '::preview' %}
             {% endif %}
+
+
         </div>
+
+
     </div>
+
 
 {% else %}
 
-    <p>Forum member not found</p>
+    <p>{{ 'eq3w.forum::fe_lang.member_not_found' | trans }}</p>
 
 {% endif %}

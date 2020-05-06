@@ -1,7 +1,7 @@
-{{ form_open({ request: 'onUpdate', model: member }) }}
+{{ form_open({ files: true,request: 'onUpdate', model: member }) }}
 
     <div class="form-group">
-        <label for="memberUsername">Username</label>
+        <label for="memberUsername">{{ 'eq3w.forum::fe_lang.username' | trans }}</label>
         <input name="username" type="text" class="form-control" id="memberUsername" value="{{ form_value('username') }}">
     </div>
 
@@ -15,11 +15,64 @@
                     {{ mailPreferences.topic_reply ? 'checked' }}
                     type="checkbox"
                     value="1" />
-                Notify me about replies to topics I am watching
+                {{ 'eq3w.forum::fe_lang.notify_about_replies' | trans }}
             </label>
         </div>
     </div>
 
-    <button type="submit" class="btn btn-default">Save</button>
+<div class="row g-mb-20 align-items-center">
+    <!-- Left Column -->
+    <div class="col-md-4">
+        <img width="200" src="{{ user.avatar.path }}">
+    </div>
+    <div class="col-md-4">
+        {{form_file('avatar')}}
+    </div>
+    <div class="col-md-4">
+        {% if marketing.cardimage != false %}
+
+        <p>{{marketing.cardimage_org_name}} <span class="fa fa-check text-success">&nbsp;</span>&nbsp;<a href="{{marketing.cardimage}}" target="_blank"><span class="fa fa-eye text-default">&nbsp;</span></a></p>
+
+        {% endif %}
+    </div>
+</div>
+
+
+<!-- user credentials -->
+
+<div class="form-group">
+    <label for="accountName">{{ 'eq3w.forum::fe_lang.full_name' | trans }}</label>
+    <input name="name" type="text" class="form-control" id="accountName" value="{{ user.name }}">
+</div>
+
+<div class="form-group">
+    <label for="accountEmail">{{ 'eq3w.forum::fe_lang.email' | trans }}</label>
+    <input name="email" type="email" class="form-control" id="accountEmail" value="{{ user.email }}">
+</div>
+
+<div class="form-group">
+    <label for="accountPassword">{{ 'eq3w.forum::fe_lang.new_password' | trans }}</label>
+    <input name="password" type="password" class="form-control" id="accountPassword">
+</div>
+
+<div class="form-group">
+    <label for="accountPasswordConfirm">{{ 'eq3w.forum::fe_lang.password_confirm' | trans }}</label>
+    <input name="password_confirmation" type="password" class="form-control" id="accountPasswordConfirm">
+</div>
+
+{% if updateRequiresPassword %}
+<p>{{ 'eq3w.forum::fe_lang.confirm_current_password' | trans }}</p>
+<div class="form-group">
+    <label for="accountPasswordCurrent">{{ 'eq3w.forum::fe_lang.current_password' | trans }} <small class="text-danger">* {{ 'eq3w.forum::fe_lang.required' | trans }}</small></label>
+    <input name="password_current" type="password" class="form-control" id="accountPasswordCurrent">
+</div>
+{% endif %}
+
+
+<!-- end user credentials -->
+
+
+
+    <button type="submit" class="btn u-btn-primary g-font-size-13 text-uppercase g-py-10 g-px-15">{{ 'eq3w.forum::fe_lang.update' | trans }}</button>
 
 {{ form_close() }}

@@ -1,15 +1,19 @@
 <div class="rainlab-forum">
 
-    <table class="forum-table">
+
+
         {% for channel in channels %}
 
+    <table class="table forum-table ">
             <tr class="root-channel">
                 <th colspan="2">
-                    {{ channel.title }}
+                    <h4>{{ channel.title }}</h4>
+                    <h5><small>{{ channel.description }}</small></h5>
+
                 </th>
-                <th class="counter-column">Topics</th>
-                <th class="counter-column">Posts</th>
-                <th class="activity-column">Recent topic</th>
+                <th class="counter-column">{{ 'eq3w.forum::fe_lang.topics' | trans }}</th>
+                <th class="counter-column">{{ 'eq3w.forum::fe_lang.posts' | trans }}</th>
+                <th class="activity-column">{{ 'eq3w.forum::fe_lang.recent_topic' | trans }}</th>
             </tr>
 
             {% if channel.relations.children %}
@@ -54,7 +58,7 @@
                                 <p>
                                     <a href="{{ channel.first_topic.url }}?page=last#post-{{ channel.first_topic.last_post_id }}">
                                         {{ channel.first_topic.subject }}
-                                    </a>
+                                    </a><br>
                                     <small>
                                         {% partial __SELF__ ~ "::timestamp" date=channel.first_topic.last_post_at %}
                                     </small>
@@ -66,10 +70,10 @@
 
             {% else %}
                 <tr>
-                    <td colspan="100"><p>There are no channels to show.</p></td>
+                    <td colspan="100"><p>{{ 'eq3w.forum::fe_lang.no_channels_to_show' | trans }}</p></td>
                 </tr>
             {% endif %}
-
-        {% endfor %}
     </table>
+        {% endfor %}
+
 </div>

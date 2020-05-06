@@ -2,8 +2,8 @@
 
 <table class="forum-table">
     <tr>
-        <th>Post</th>
-        <th class="activity-column">When</th>
+        <th>{{ 'eq3w.forum::fe_lang.post' | trans }}</th>
+        <th class="activity-column">{{ 'eq3w.forum::fe_lang.when' | trans }}</th>
     </tr>
 
     {% for post in posts %}
@@ -14,7 +14,7 @@
             </td>
             <td class="activity-column">
                 <p>
-                    Posted in
+                    {{ 'eq3w.forum::fe_lang.posted_in' | trans }}
                     <a href="{{ topic.url }}?page=last#post-{{ post.id }}">{{ topic.subject }}</a>
                     {% partial __SELF__ ~ "::timestamp" date=post.updated_at %}
                 </p>
@@ -24,7 +24,7 @@
 
     {% if not posts|length %}
         <tr>
-            <td colspan="100">This member has not participated in the forum.</td>
+            <td colspan="100">{{ 'eq3w.forum::fe_lang.member_not_part' | trans }}</td>
         </tr>
     {% endif %}
 </table>
