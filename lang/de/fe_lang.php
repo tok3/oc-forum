@@ -131,7 +131,7 @@ return [
     'quote'=>'Zitieren',
     'edit'=>'Bearbeiten',
     'search_topics'=>'Themen durchsuchen',
-
+    'search_topics'=>'Themen durchsuchen',
     ''=>'',
     ''=>'',
     '' => '',
