@@ -124,6 +124,8 @@ return [
         'slug_name' => 'Slug param name',
         'slug_desc' => 'The URL route parameter used for looking up the topic by its slug. A hard coded slug can also be used.',
         'channel_title' => 'Channel Page',
-        'channel_desc' => 'Page name to use for clicking on a channel.'
+        'channel_desc' => 'Page name to use for clicking on a channel.',
+        'channel_list_title' => 'Channel List Page',
+        'channel_list_desc' => 'Page which contains channel list.'
     ]
 ];

@@ -1,52 +1,52 @@
-subject = "Reply to '{{ topic.subject }}'"
+subject = "Beitrag zu: '{{ topic.subject }}'"
 ==
-Dear {{ member.username }},
+Sehr geehrte/r {{ member.username }},
 
-{{ post.member.username }} has just replied to a topic you are following entitled - {{ topic.subject }} - in the {{ channel.title }} forum. There may be other replies also, but you will not receive any more notifications for this topic until you are active on the forum again.
+{{ post.member.username }} hat soeben zu dem von Ihnen verfolgten Thema "{{ topic.subject }}" im Forumkanal "{{ channel.title }}" beigetragen. Möglicherweise gibt es noch weitere Antworten, Sie erhalten zu diesem Thema aber keine Benachrichtigungen mehr, bis Sie wieder im Forum aktiv sind.
 
-This topic is located at:
+Dieses Thema finden Sie unter:
 {{ postUrl }}
 
-Here is the message that has just been posted:
+Hier ist der Beitrag, der gerade veröffentlicht wurde:
 ----------------------------------------------
 {{ post.content }}
 ----------------------------------------------
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
-Unsubscription information
+Informationen zur Abmeldung
 
-To unsubscribe from this topic, please visit this page:
+Sie möchten sich von DIESEM Thema abmelden, besuchen Sie bitte diese Seite:
 {{ unfollowUrl }}
 
-To unsubscribe from ALL topics, please visit this page:
+Um sich von ALLEN Themen abzumelden, besuchen Sie bitte diese Seite:
 {{ unsubscribeUrl }}
 
 ==
 
-<p>Dear {{ member.username }},</p>
+<p>Sehr geehrte/r {{ member.username }},</p>
 
-<p>{{ post.member.username }} has just replied to a topic you are following entitled <em>{{ topic.subject }}</em> in the {{ channel.title }} forum. There may be other replies also, but you will not receive any more notifications for this topic until you are active on the forum again.</p>
+<p>{{ post.member.username }} hat soeben zu dem von Ihnen verfolgten Thema <em>"{{ topic.subject }}"</em> im Forumkanal "{{ channel.title }}" beigetragen. Möglicherweise gibt es noch weitere Antworten, Sie erhalten zu diesem Thema aber keine Benachrichtigungen mehr, bis Sie wieder im Forum aktiv sind.</p>
 
 <p>
-    This topic is located at:<br />
+    Dieses Thema finden Sie unter:<br />
     <a href="{{ postUrl }}">{{ postUrl }}</a>
 </p>
 
-<p>Here is the message that has just been posted:</p>
+<p>Hier ist der Beitrag, der gerade veröffentlicht wurde:</p>
 <hr />
 {{ post.content }}
 <hr />
 
 <br /><br />
 <hr />
-<p><strong>Unsubscription information</strong></p>
+<p><strong>Informationen zur Abmeldung</strong></p>
 
 <p>
-    To unsubscribe from this topic, please visit this page:<br />
+    Sie möchten sich von DIESEM Thema abmelden, besuchen Sie bitte diese Seite: <br />
     <a href="{{ unfollowUrl }}">{{ unfollowUrl }}</a>
 </p>
 
 <p>
-    To unsubscribe from ALL topics, please visit this page:<br />
+    Um sich von ALLEN Themen abzumelden, besuchen Sie bitte diese Seite:<br />
     <a href="{{ unsubscribeUrl }}">{{ unsubscribeUrl }}</a>
 </p>
