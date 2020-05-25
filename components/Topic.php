@@ -127,6 +127,7 @@ class Topic extends ComponentBase
 
     public function getTopic()
     {
+
         if ($this->topic !== null) {
             return $this->topic;
         }
@@ -155,6 +156,7 @@ class Topic extends ComponentBase
 
     public function getChannel()
     {
+
         if ($this->channel !== null) {
             return $this->channel;
         }
@@ -274,7 +276,7 @@ class Topic extends ComponentBase
 
             $expectedCode = TopicFollow::makeAuthCode($action, $topic, $member);
             if ($authCode != $expectedCode) {
-                Flash::error(\Lang::get('eq3w.forum::fe_lang.topic.invalid_code'));
+                Flash::error(\Lang::get('eq3w.forum::fe_lang.topic_invalid_code'));
                 return;
             }
         }
@@ -284,7 +286,7 @@ class Topic extends ComponentBase
          */
         if ($action == 'unfollow') {
             TopicFollow::unfollow($topic, $member);
-            Flash::success(\Lang::get('eq3w.forum::fe_lang.topic.notifications_disabled'));
+            Flash::success(\Lang::get('eq3w.forum::fe_lang.topic_notifications_disabled'));
         }
 
         /*
@@ -292,7 +294,7 @@ class Topic extends ComponentBase
          */
         if ($action == 'unsubscribe' && $member->user) {
             MailBlocker::addBlock('eq3w.forum::mail.topic_reply', $member->user);
-            Flash::success(\Lang::get('eq3w.forum::fe_lang.topic.forum_notifications_disabled'));
+            Flash::success(\Lang::get('eq3w.forum::fe_lang.topic_forum_notifications_disabled'));
         }
 
     }
@@ -307,23 +309,23 @@ class Topic extends ComponentBase
             $channel = $this->getChannel();
             
             if ($channel->is_moderated && !$member->is_moderator) {
-                throw new ApplicationException(\Lang::get('eq3w.forum::fe_lang.topic.no_creation'));
+                throw new ApplicationException(\Lang::get('eq3w.forum::fe_lang.topic_no_creation'));
             }
 
             if (TopicModel::checkThrottle($member)) {
 
-                throw new ApplicationException(\Lang::get('eq3w.forum::fe_lang.topic.wait'));
+                throw new ApplicationException(\Lang::get('eq3w.forum::fe_lang.topic_wait'));
 
             }
 
             if ($member->is_banned) {
-                throw new ApplicationException(\Lang::get('eq3w.forum::fe_lang.topic.account_banned'));
+                throw new ApplicationException(\Lang::get('eq3w.forum::fe_lang.topic_account_banned'));
             }
 
             $topic = TopicModel::createInChannel($channel, $member, post());
             $topicUrl = $this->currentPageUrl([$this->paramName('slug') => $topic->slug]);
 
-            Flash::success(post('flash', \Lang::get('eq3w.forum::fe_lang.topic.cr_success')));
+            Flash::success(post('flash', \Lang::get('eq3w.forum::fe_lang.topic_cr_success')));
 
             /*
              * Extensbility
@@ -354,14 +356,14 @@ class Topic extends ComponentBase
             $topic = $this->getTopic();
 
             if (!$topic || !$topic->canPost()) {
-                throw new ApplicationException(\Lang::get('eq3w.forum::fe_lang.topic.cant_edit'));
+                throw new ApplicationException(\Lang::get('eq3w.forum::fe_lang.topic_cant_edit'));
             }
 
             $post = PostModel::createInTopic($topic, $member, post());
             $postUrl = $this->currentPageUrl([$this->paramName('slug') => $topic->slug]);
 
             TopicFollow::sendNotifications($topic, $post, $postUrl);
-            Flash::success(post('flash', \Lang::get('eq3w.forum::fe_lang.topic.resp_success')));
+            Flash::success(post('flash', \Lang::get('eq3w.forum::fe_lang.topic_resp_success')));
 
             /*
              * Extensbility
@@ -398,7 +400,7 @@ class Topic extends ComponentBase
         $mode = post('mode', 'edit');
         if ($mode == 'save') {
             if (!$topic || !$topic->canPost()) {
-                throw new ApplicationException(\Lang::get('eq3w.forum::fe_lang.topic.cant_edit'));
+                throw new ApplicationException(\Lang::get('eq3w.forum::fe_lang.topic_cant_edit'));
             }
 
             $post->fill(post());
@@ -426,7 +428,7 @@ class Topic extends ComponentBase
         }
 
         if (!$post = PostModel::find(post('post'))) {
-            throw new ApplicationException(\Lang::get('eq3w.forum::fe_lang.topic.no_post'));
+            throw new ApplicationException(\Lang::get('eq3w.forum::fe_lang.topic_no_post'));
         }
 
         $result = $post->toArray();
@@ -447,10 +449,10 @@ class Topic extends ComponentBase
         $channel = ChannelModel::find($channelId);
         if ($channel) {
             $this->getTopic()->moveToChannel($channel);
-            Flash::success(post('flash', \Lang::get('eq3w.forum::fe_lang.topic.moved')));
+            Flash::success(post('flash', \Lang::get('eq3w.forum::fe_lang.topic_moved')));
         }
         else {
-            Flash::error(\Lang::get('eq3w.forum::fe_lang.topic.unable_to_move'));
+            Flash::error(\Lang::get('eq3w.forum::fe_lang.topic_unable_to_move'));
         }
     }
 
